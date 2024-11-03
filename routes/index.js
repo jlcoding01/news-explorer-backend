@@ -5,4 +5,8 @@ const newsItemsRouter = require("./newsItems");
 router.use("/users", userRouter);
 router.use("/articles", newsItemsRouter);
 
+router.use((req, res, next) => {
+  next(new Error("Requested resource not found"));
+});
+
 module.exports = router;

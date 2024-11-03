@@ -1,15 +1,14 @@
 const router = require("express").Router();
+const {
+  getNewsItem,
+  createNewsItem,
+  deleteNewsItem,
+} = require("../controllers/newsItems");
 
-router.get("/", () => {
-  console.log("Get news");
-});
+router.get("/", getNewsItem);
 
-router.post("/", () => {
-  console.log("Post news");
-});
+router.post("/", createNewsItem);
 
-router.delete("/articleId", () => {
-  console.log("Get news");
-});
+router.delete("/articleId", deleteNewsItem);
 
 module.exports = router;
