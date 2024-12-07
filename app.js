@@ -1,13 +1,17 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const {errors} = require("celebrate")
+const { errors } = require("celebrate");
 
 const mainRouter = require("./routes/index");
 const { createUser, login } = require("./controllers/users");
 const { getNewsItem } = require("./controllers/newsItems");
 const auth = require("./middlewares/auth");
 const errorHandler = require("./middlewares/error-handler");
+const {
+  validateUserBody,
+  validateUserLogIn,
+} = require("./middlewares/validation");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 const app = express();
@@ -18,8 +22,8 @@ app.use(express.json());
 app.use(cors());
 
 app.use(requestLogger);
-app.post("/signup", createUser);
-app.post("/signin", login);
+app.post("/signup", validateUserBody, createUser);
+app.post("/signin", validateUserLogIn, login);
 app.get("/articles", getNewsItem);
 
 app.use(auth);
@@ -27,7 +31,7 @@ app.use("/", mainRouter);
 
 app.use(errorLogger);
 
-app.use(errors())
+app.use(errors());
 app.use(errorHandler);
 
 mongoose

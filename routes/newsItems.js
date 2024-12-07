@@ -4,11 +4,12 @@ const {
   createNewsItem,
   deleteNewsItem,
 } = require("../controllers/newsItems");
+const { validateNewsItem, validateId } = require("../middlewares/validation");
 
 router.get("/", getNewsItem);
 
-router.post("/", createNewsItem);
+router.post("/", validateNewsItem, createNewsItem);
 
-router.delete("/articleId", deleteNewsItem);
+router.delete("/articleId", validateId, deleteNewsItem);
 
 module.exports = router;
