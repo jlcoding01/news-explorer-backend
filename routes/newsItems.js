@@ -10,6 +10,6 @@ router.get("/", getNewsItem);
 
 router.post("/", validateNewsItem, createNewsItem);
 
-router.delete("/articleId", validateId, deleteNewsItem);
+router.delete("/:articleId", validateId, deleteNewsItem);
 
 module.exports = router;

@@ -6,7 +6,6 @@ const { errors } = require("celebrate");
 
 const mainRouter = require("./routes/index");
 const { createUser, login } = require("./controllers/users");
-const { getNewsItem } = require("./controllers/newsItems");
 const auth = require("./middlewares/auth");
 const errorHandler = require("./middlewares/error-handler");
 const {
@@ -14,6 +13,7 @@ const {
   validateUserLogIn,
 } = require("./middlewares/validation");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
+const { DATABASE_URL } = require("./utils/config");
 
 const app = express();
 
@@ -25,7 +25,6 @@ app.use(cors());
 app.use(requestLogger);
 app.post("/signup", validateUserBody, createUser);
 app.post("/signin", validateUserLogIn, login);
-app.get("/articles", getNewsItem);
 
 app.use(auth);
 app.use("/", mainRouter);
@@ -36,7 +35,7 @@ app.use(errors());
 app.use(errorHandler);
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/newsexplorer_db")
+  .connect(DATABASE_URL)
   .then(() => {
     console.log("Connect to DB");
   })
