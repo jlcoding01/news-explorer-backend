@@ -3,6 +3,7 @@ const NewsItem = require("../models/newsItem");
 const BadRequestError = require("../errors/bad-request-err");
 const NotFoundError = require("../errors/not-found-err");
 const ForbiddenError = require("../errors/forbidden-err");
+const { RESPONSE_MESSAGES, ERROR_MESSAGES } = require("../utils/constants");
 
 const getNewsItem = (req, res, next) => {
   NewsItem.find({ owner: req.user._id })
@@ -30,7 +31,7 @@ const createNewsItem = (req, res, next) => {
     .catch((err) => {
       console.log(err.name);
       if (err.name === "ValidationError") {
-        next(new BadRequestError("Bad Request! Invalid data passed!"));
+        next(new BadRequestError(ERROR_MESSAGES.INVALID));
       } else {
         next(err);
       }
@@ -45,22 +46,18 @@ const deleteNewsItem = (req, res, next) => {
     .orFail()
     .then((item) => {
       if (item.owner.toString() !== _id) {
-        return next(new ForbiddenError("Request was forbidden!"));
+        return next(new ForbiddenError(ERROR_MESSAGES.FORBIDDEN));
       }
-      return NewsItem.findByIdAndRemove(req.params.articleId)
-        .then(() =>
-          res.send({ message: "Item was successfully deleted", item })
-        )
-        .catch((err) => console.error(err));
+      return NewsItem.findByIdAndRemove(req.params.articleId).then(() =>
+        res.send({ message: RESPONSE_MESSAGES.ITEM_DELETED, item })
+      );
     })
     .catch((err) => {
       console.log(err.name);
       if (err.name === "CastError") {
-        next(new BadRequestError("Bad Request! Invalid data passed!"));
+        next(new BadRequestError(ERROR_MESSAGES.INVALID));
       } else if (err.name === "DocumentNotFoundError") {
-        next(
-          new NotFoundError("The request was sent to a non-existent address")
-        );
+        next(new NotFoundError(ERROR_MESSAGES.NOT_FOUND));
       } else {
         next(err);
       }
